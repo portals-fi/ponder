@@ -289,10 +289,16 @@ export const createRealtimeSync = (
       if (block === undefined) {
         [block, logs] = await Promise.all([
           _eth_getBlockByHash(args.rpc, { hash: maybeBlockHeader.hash }),
-          _eth_getLogs(args.rpc, { blockHash: maybeBlockHeader.hash }),
+          _eth_getLogs(args.rpc, {
+            fromBlock: maybeBlockHeader.number,
+            toBlock: maybeBlockHeader.number,
+          }),
         ]);
       } else {
-        logs = await _eth_getLogs(args.rpc, { blockHash: block.hash });
+        logs = await _eth_getLogs(args.rpc, {
+          fromBlock: block.number,
+          toBlock: block.number,
+        });
       }
 
       validateLogsAndBlock(logs, block);
